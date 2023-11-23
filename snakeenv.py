@@ -10,7 +10,7 @@ from collections import deque
 
 SNAKE_LEN_GOAL = 30
 
-SIZE = 200
+SIZE = 500
 
 render = True
 
@@ -32,7 +32,6 @@ def collision_with_self(snake_position):
     else:
         return 0
  
-
 class SnakeEnv(gym.Env):
     def __init__(self):
         super(SnakeEnv, self).__init__()
@@ -45,17 +44,17 @@ class SnakeEnv(gym.Env):
     def step(self, action):
         previous_act = self.prev_actions[-1]
         
-        if len(self.prev_actions) == 0:
+        if all(i == -1 for i in self.prev_actions):
             action = random.choice([1,2,3])
-
-        if previous_act == 0 & action == 1:
-            action = random.choice([0,2,3])
-        elif previous_act == 1 & action == 0:
-            action = random.choice([1,2,3])
-        elif previous_act == 2 & action == 3:
-            action = random.choice([0,1,2])
-        elif previous_act == 3 & action == 2:
-            action = random.choice([0,1,3])
+        else:
+            if previous_act == 0 and action == 1:
+                action = random.choice([0,2,3])
+            elif previous_act == 1 and action == 0:
+                action = random.choice([1,2,3])
+            elif previous_act == 2 and action == 3:
+                action = random.choice([0,1,2])
+            elif previous_act == 3 and action == 2:
+                action = random.choice([0,1,3])
 
         button_direction = action
 

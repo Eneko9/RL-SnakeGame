@@ -23,4 +23,4 @@ model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_dir)
 TIMESTEPS = 1000000
 
 model.learn(total_timesteps = TIMESTEPS, reset_num_timesteps=False, tb_log_name=ALGORTIHM, progress_bar = True)
-model.save(f"{models_dir}/{ALGORTIHM}_{TIMESTEPS}_1")
+model.save(f"{models_dir}/{ALGORTIHM}_{TIMESTEPS}_2")
