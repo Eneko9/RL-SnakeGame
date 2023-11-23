@@ -10,13 +10,17 @@ from collections import deque
 
 SNAKE_LEN_GOAL = 30
 
+SIZE = 200
+
+render = True
+
 def collision_with_apple(apple_position, score):
-    apple_position = [random.randrange(1,50)*10,random.randrange(1,50)*10]
+    apple_position = [random.randrange(1,SIZE//10)*10,random.randrange(1,SIZE//10)*10]
     score += 1
     return apple_position, score
 
 def collision_with_boundaries(snake_head):
-    if snake_head[0]>=500 or snake_head[0]<0 or snake_head[1]>=500 or snake_head[1]<0:
+    if snake_head[0]>=SIZE or snake_head[0]<0 or snake_head[1]>=SIZE or snake_head[1]<0:
         return 1
     else:
         return 0
@@ -39,34 +43,56 @@ class SnakeEnv(gym.Env):
 
 
     def step(self, action):
-        self.prev_actions.append(action)
-        cv2.imshow('a',self.img)
-        cv2.waitKey(1)
-        self.img = np.zeros((500,500,3),dtype='uint8')
-        # Display Apple
-        cv2.rectangle(self.img,(self.apple_position[0],self.apple_position[1]),(self.apple_position[0]+10,self.apple_position[1]+10),(0,0,255),3)
-        # Display Snake
-        for position in self.snake_position:
-            cv2.rectangle(self.img,(position[0],position[1]),(position[0]+10,position[1]+10),(0,255,0),3)
+        previous_act = self.prev_actions[-1]
         
-        # Takes step after fixed time
-        t_end = time.time() + 0.05
-        k = -1
-        while time.time() < t_end:
-            if k == -1:
-                k = cv2.waitKey(1)
-            else:
-                continue
-	
+        if len(self.prev_actions) == 0:
+            action = random.choice([1,2,3])
+
+        if previous_act == 0 & action == 1:
+            action = random.choice([0,2,3])
+        elif previous_act == 1 & action == 0:
+            action = random.choice([1,2,3])
+        elif previous_act == 2 & action == 3:
+            action = random.choice([0,1,2])
+        elif previous_act == 3 & action == 2:
+            action = random.choice([0,1,3])
+
         button_direction = action
+
+        self.prev_actions.append(action)
+        
+        if render:
+            cv2.imshow('a',self.img)
+            cv2.waitKey(1)
+            self.img = np.zeros((SIZE,SIZE,3),dtype='uint8')
+
+            # Display Apple
+            cv2.rectangle(self.img,(self.apple_position[0],self.apple_position[1]),(self.apple_position[0]+10,self.apple_position[1]+10),(0,0,255),3)
+            # Display Snake
+            for position in self.snake_position:
+                cv2.rectangle(self.img,(position[0],position[1]),(position[0]+10,position[1]+10),(0,255,0),3)
+            
+            # Takes step after fixed time
+            t_end = time.time() + 0.05
+            k = -1
+            while time.time() < t_end:
+                if k == -1:
+                    k = cv2.waitKey(1)
+                else:
+                    continue
+
         # Change the head position based on the button direction
         if button_direction == 1:
+            print("Derecha")
             self.snake_head[0] += 10
         elif button_direction == 0:
+            print("Izquierda")
             self.snake_head[0] -= 10
         elif button_direction == 2:
+            print("Arriba")
             self.snake_head[1] += 10
         elif button_direction == 3:
+            print("Abajo")
             self.snake_head[1] -= 10
 
 
@@ -86,11 +112,15 @@ class SnakeEnv(gym.Env):
         
         # On collision kill the snake and print the score
         if self.truncated or collision_with_self(self.snake_position) == 1:
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            self.img = np.zeros((500,500,3),dtype='uint8')
-            cv2.putText(self.img,'Your Score is {}'.format(self.score),(140,250), font, 1,(255,255,255),2,cv2.LINE_AA)
-            cv2.imshow('a',self.img)
             
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            self.img = np.zeros((SIZE,SIZE,3),dtype='uint8')
+            if render:
+                cv2.putText(self.img,'Your Score is {}'.format(self.score),(140,250), font, 1,(255,255,255),2,cv2.LINE_AA)
+                cv2.imshow('a',self.img)
+            
+            print("Crash")
+
             self.done = True
         
 
@@ -125,15 +155,16 @@ class SnakeEnv(gym.Env):
         return observation, self.total_reward, self.done, self.truncated, info
 
     def reset(self, seed=None, options=None):
+        
         super().reset(seed=seed, options=options)
-        self.img = np.zeros((500,500,3),dtype='uint8')
+        self.img = np.zeros((SIZE,SIZE,3),dtype='uint8')
         # Initial Snake and Apple position
-        self.snake_position = [[250,250],[240,250],[230,250]]
-        self.apple_position = [random.randrange(1,50)*10,random.randrange(1,50)*10]
+        self.snake_position = [[SIZE//2,SIZE//2],[(SIZE//2)-10,SIZE//2],[(SIZE//2)-20,SIZE//2]]
+        self.apple_position = [random.randrange(1,SIZE//10)*10,random.randrange(1,SIZE//10)*10]
         self.score = 0
         self.prev_button_direction = 1
         self.button_direction = 1
-        self.snake_head = [250,250]
+        self.snake_head = [SIZE//2,SIZE//2]
 
         self.prev_reward = 0
 
@@ -156,4 +187,5 @@ class SnakeEnv(gym.Env):
         
         info = {}
         
+        print("Reset")
         return observation, info

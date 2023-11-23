@@ -7,7 +7,7 @@ from gym import RewardWrapper
 ALGORTIHM="PPO"
 models_dir = "models/" + ALGORTIHM
 log_dir = "logs"
-
+TIMESTEPS = 1000000
 
 if not os.path.exists(models_dir):
     os.makedirs(models_dir)
@@ -18,9 +18,14 @@ if not os.path.exists(log_dir):
     
 env = SnakeEnv()
 
-model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_dir)
+model = PPO.load(f'{models_dir}/{ALGORTIHM}_{TIMESTEPS}_1')
 
-TIMESTEPS = 1000000
+obs,info=env.reset()
+for i in range(2000):
+	action,_state = model.predict(obs,deterministic=True)
+	obs,reward,done,info,_ = env.step(action)
+	if done:
+		obs,info = env.reset()
+	env.close()
 
-model.learn(total_timesteps = TIMESTEPS, reset_num_timesteps=False, tb_log_name=ALGORTIHM, progress_bar = True)
-model.save(f"{models_dir}/{ALGORTIHM}_{TIMESTEPS}_1")
+check_env(env)
