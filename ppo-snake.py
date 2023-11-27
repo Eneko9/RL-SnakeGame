@@ -18,9 +18,12 @@ if not os.path.exists(log_dir):
     
 env = SnakeEnv()
 
-model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_dir)
+TIMESTEPS = 2500000
 
-TIMESTEPS = 1000000
+#model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_dir)
+model = PPO.load(f'{models_dir}/PPO_2000000_4', env = env)
+
+
 
 model.learn(total_timesteps = TIMESTEPS, reset_num_timesteps=False, tb_log_name=ALGORTIHM, progress_bar = True)
-model.save(f"{models_dir}/{ALGORTIHM}_{TIMESTEPS}_2")
+model.save(f"{models_dir}/{ALGORTIHM}_{TIMESTEPS}_5")

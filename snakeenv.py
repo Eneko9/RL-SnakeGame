@@ -9,7 +9,6 @@ import time
 from collections import deque
 
 SNAKE_LEN_GOAL = 30
-
 SIZE = 500
 
 render = True
@@ -82,16 +81,16 @@ class SnakeEnv(gym.Env):
 
         # Change the head position based on the button direction
         if button_direction == 1:
-            print("Derecha")
+
             self.snake_head[0] += 10
         elif button_direction == 0:
-            print("Izquierda")
+
             self.snake_head[0] -= 10
         elif button_direction == 2:
-            print("Arriba")
+
             self.snake_head[1] += 10
         elif button_direction == 3:
-            print("Abajo")
+
             self.snake_head[1] -= 10
 
 
@@ -118,7 +117,7 @@ class SnakeEnv(gym.Env):
                 cv2.putText(self.img,'Your Score is {}'.format(self.score),(140,250), font, 1,(255,255,255),2,cv2.LINE_AA)
                 cv2.imshow('a',self.img)
             
-            print("Crash")
+
 
             self.done = True
         
@@ -128,7 +127,7 @@ class SnakeEnv(gym.Env):
 
         self.total_reward = ((250 - euclidean_dist_to_apple) + apple_reward)/100
 
-        print(self.total_reward)
+	
 
 
         self.reward = self.total_reward - self.prev_reward
@@ -186,5 +185,4 @@ class SnakeEnv(gym.Env):
         
         info = {}
         
-        print("Reset")
         return observation, info
