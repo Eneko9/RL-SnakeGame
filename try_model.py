@@ -18,7 +18,7 @@ if not os.path.exists(log_dir):
     
 env = SnakeEnv()
 
-model = PPO.load(f'{models_dir}/PPO_2500000_5')
+model = PPO.load(f'{models_dir}/PPO_7000000_5')
 
 obs,info=env.reset()
 for i in range(2000):

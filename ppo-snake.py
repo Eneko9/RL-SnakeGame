@@ -18,10 +18,10 @@ if not os.path.exists(log_dir):
     
 env = SnakeEnv()
 
-TIMESTEPS = 2500000
+TIMESTEPS = 7000000
 
 #model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_dir)
-model = PPO.load(f'{models_dir}/PPO_2000000_4', env = env)
+model = PPO.load(f'{models_dir}/PPO_2500000_5', env = env)
 
 
 

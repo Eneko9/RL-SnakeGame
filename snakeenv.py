@@ -63,6 +63,7 @@ class SnakeEnv(gym.Env):
             cv2.imshow('a',self.img)
             cv2.waitKey(1)
             self.img = np.zeros((SIZE,SIZE,3),dtype='uint8')
+            
 
             # Display Apple
             cv2.rectangle(self.img,(self.apple_position[0],self.apple_position[1]),(self.apple_position[0]+10,self.apple_position[1]+10),(0,0,255),3)
@@ -99,7 +100,7 @@ class SnakeEnv(gym.Env):
         if self.snake_head == self.apple_position:
             self.apple_position, self.score = collision_with_apple(self.apple_position, self.score)
             self.snake_position.insert(0,list(self.snake_head))
-            apple_reward = 10000
+            apple_reward = 20000
 
         else:
             self.snake_position.insert(0,list(self.snake_head))
@@ -110,33 +111,23 @@ class SnakeEnv(gym.Env):
         
         # On collision kill the snake and print the score
         if self.truncated or collision_with_self(self.snake_position) == 1:
-            
             font = cv2.FONT_HERSHEY_SIMPLEX
             self.img = np.zeros((SIZE,SIZE,3),dtype='uint8')
             if render:
-                cv2.putText(self.img,'Your Score is {}'.format(self.score),(140,250), font, 1,(255,255,255),2,cv2.LINE_AA)
+                cv2.putText(self.img,'Your Score is {}'.format(self.score),(140,250), font, 1,(0,0,0),2,cv2.LINE_AA)
                 cv2.imshow('a',self.img)
-            
-
-
+                print('Your score is {}'.format(self.score))
             self.done = True
-        
-
-
         euclidean_dist_to_apple = np.linalg.norm(np.array(self.snake_head) - np.array(self.apple_position))
 
         self.total_reward = ((250 - euclidean_dist_to_apple) + apple_reward)/100
-
-	
-
 
         self.reward = self.total_reward - self.prev_reward
         self.prev_reward = self.total_reward
 
         if self.done:
-            self.reward = -10
+            self.reward = -100
         info = {}
-
 
         head_x = self.snake_head[0]
         head_y = self.snake_head[1]
@@ -157,7 +148,10 @@ class SnakeEnv(gym.Env):
         super().reset(seed=seed, options=options)
         self.img = np.zeros((SIZE,SIZE,3),dtype='uint8')
         # Initial Snake and Apple position
-        self.snake_position = [[SIZE//2,SIZE//2],[(SIZE//2)-10,SIZE//2],[(SIZE//2)-20,SIZE//2]]
+        random_init1 = random.randrange(1,SIZE//10)*10
+        random_init2 = random.randrange(1,SIZE//10)*10
+        self.snake_position = [[random_init1,random_init2],[random_init1-10,random_init2],[random_init1-20,random_init2]]
+        print(self.snake_position)
         self.apple_position = [random.randrange(1,SIZE//10)*10,random.randrange(1,SIZE//10)*10]
         self.score = 0
         self.prev_button_direction = 1
