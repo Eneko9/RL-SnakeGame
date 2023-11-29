@@ -151,7 +151,7 @@ class SnakeEnv(gym.Env):
         random_init1 = random.randrange(1,SIZE//10)*10
         random_init2 = random.randrange(1,SIZE//10)*10
         self.snake_position = [[random_init1,random_init2],[random_init1-10,random_init2],[random_init1-20,random_init2]]
-        print(self.snake_position)
+        #print(self.snake_position)
         self.apple_position = [random.randrange(1,SIZE//10)*10,random.randrange(1,SIZE//10)*10]
         self.score = 0
         self.prev_button_direction = 1
