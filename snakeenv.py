@@ -126,7 +126,7 @@ class SnakeEnv(gym.Env):
         self.prev_reward = self.total_reward
 
         if self.done:
-            self.reward = -100
+            self.reward = -1000
         info = {}
 
         head_x = self.snake_head[0]

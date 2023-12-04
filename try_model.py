@@ -18,10 +18,10 @@ if not os.path.exists(log_dir):
     
 env = SnakeEnv()
 
-model = PPO.load(f'{models_dir}/PPO_7000000_6')
+model = PPO.load(f'{models_dir}/PPO_7000000_7')
 
 obs,info=env.reset()
-for i in range(2000):
+for i in range(20000):
 	action,_state = model.predict(obs,deterministic=True)
 	obs,reward,done,info,_ = env.step(action)
 	if done:

@@ -22,9 +22,9 @@ env = SnakeEnv()
 TIMESTEPS = 7000000
 
 if RETRAIN:
-	model = PPO.load(f'{models_dir}/PPO_7000000_5', env = env)
+	model = PPO.load(f'{models_dir}/PPO_7000000_6', env = env)
 else:
 	model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_dir)
 	
 model.learn(total_timesteps = TIMESTEPS, reset_num_timesteps=False, tb_log_name=ALGORTIHM, progress_bar = True)
-model.save(f"{models_dir}/{ALGORTIHM}_{TIMESTEPS}_6")
+model.save(f"{models_dir}/{ALGORTIHM}_{TIMESTEPS}_7")
